@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>跨进电商物流费计算</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- 头部 -->
+    <header>
+        <div class="flex flexs">
+            <div class="headerTitle">跨进电商物流费计算</div>
+            <div class="headerNav flex flexs">
+                <div class="exportBtn">
+                    <button type="button">导入</button>
+                    <button type="button">导出</button>
+                </div>
+                <div class="user">
+                    <span>admin</span>
+                    <span>注销</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="contents">
+        <!-- 物流费计算表单 -->
+        <div class="secForm"> 
+            <div class="flex">
+                <div class="formDiv">
+                    <label for="pick">转关提货费</label>
+                    <input type="text" name="pick" onkeyup="keyUp(event, this);" oninput="numRequire(this);" onblur="numFixed(this)" placeholder="请输入价格">
+                </div>
+                <div class="formDiv">
+                    <label for="clearance">关场清关费</label>
+                    <input type="text" name="clearance" onkeyup="keyUp(event, this);" oninput="numRequire(this);" onblur="numFixed(this)" placeholder="请输入价格">
+                </div>
+            </div>
+            <div class="flex">
+                <div class="formDiv">
+                    <label class="deliveredLabel" for="delivered">寄达地</label>
+                    <select name="delivered" id="delivered">
+                        <option value="0"></option>
+                        <option value="1">上海</option>
+                        <option value="2">北京</option>
+                        <option value="3">山东，山西，宁夏</option>
+                        <option value="4">青海，西藏，新疆</option>
+                    </select>
+                    <button type="button" onclick="asideShow(0);">新增</button>
+                </div>
+                <div class="formDiv">
+                    <label for="express">快递类型</label>
+                    <select name="express" id="express">
+                        <option value="0"></option>
+                        <option value="1">申通</option>
+                        <option value="2">圆通</option>
+                    </select>
+                    <button type="button" onclick="asideShow(1);">新增</button>
+                </div>
+                <div class="formDiv">
+                    <label for="weight">首重</label>
+                    <input type="text" name="weight" onkeyup="keyUp(event, this);" oninput="numRequire(this);" onblur="numFixed(this)" placeholder="0.00">
+                </div>
+                <div class="formDiv">
+                    <label for="addWeight">续重</label>
+                    <input type="text" name="addWeight" onkeyup="keyUp(event, this);" oninput="numRequire(this);" onblur="numFixed(this)" placeholder="0.00">
+                </div>
+            </div>
+        </div>
+
+        <!-- 物流费计算列表 -->
+        <div class="secList">
+            <ul>
+                <li>
+                    <p>寄达地</p>
+                    <p>快递类型</p>
+                    <p>首重(元/kg）</p>
+                    <p>续重(元/kg）</p>
+                    <p>管理操作</p>
+                </li>
+                <li>
+                    <p><span onclick="tEdit(this);">上海</span></p>
+                    <p><span onclick="tEdit(this);">圆通</span></p>
+                    <p><span onclick="tEdit(this, 1);">5.00</span></p>
+                    <p><span onclick="tEdit(this, 1);">3.00</span></p>
+                    <p><span onclick="delSecList(this);">删除</span></p>
+                </li>
+                <li>
+                    <p><span onclick="tEdit(this);">北京</span></p>
+                    <p><span onclick="tEdit(this);">圆通</span></p>
+                    <p><span onclick="tEdit(this, 1);">5.00</span></p>
+                    <p><span onclick="tEdit(this, 1);">3.00</span></p>
+                    <p><span onclick="delSecList(this);">删除</span></p>
+                </li>
+                <li>
+                    <p><span onclick="tEdit(this);">山东，山西，宁夏</span></p>
+                    <p><span onclick="tEdit(this);">申通</span></p>
+                    <p><span onclick="tEdit(this, 1);">5.00</span></p>
+                    <p><span onclick="tEdit(this, 1);">3.00</span></p>
+                    <p><span onclick="delSecList(this);">删除</span></p>
+                </li>
+                <li>
+                    <p><span onclick="tEdit(this);">青海，西藏，新疆</span></p>
+                    <p><span onclick="tEdit(this);">圆通</span></p>
+                    <p><span onclick="tEdit(this, 1);">5.00</span></p>
+                    <p><span onclick="tEdit(this, 1);">3.00</span></p>
+                    <p><span onclick="delSecList(this);">删除</span></p>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- 新增弹窗 -->
+    <aside class="aside">
+        <div class="addMask">
+            <!-- 新增快递 -->
+            <div class="addExpress">
+                <input type="text" class="addInput" placeholder="请输入快递名称">
+                <button type="button" onclick="addExpress(this);">保存</button>
+            </div>
+
+            <!-- 快递类型 -->
+            <div class="expressType">
+                <label for="expressType">快递类型</label>
+                <select name="expressType" id="expressType">
+                    <option value="0"></option>
+                    <option value="1">圆通</option>
+                    <option value="2">申通</option>
+                    <option value="3">顺丰</option>
+                </select>
+                <button type="button" onclick="expressType(this);">确认</button>
+            </div> 
+        </div>
+    </aside>
+</body>
+<script src="/js/jquery-3.3.1.min.js"></script>
+
+<script>
+    $(function () {
+        var W = window.screen.availWidth;
+        var H = window.screen.availHeight;
+        
+        // 弹窗遮罩层宽度与高度
+        function asideSize () {
+            $('aside').width(W);
+            $('aside').height(H);
+        }
+        
+        // 弹窗遮罩层点击阴影隐藏
+        $('aside').click(function (e) {
+            var name = e.target.className;
+            if(name == 'aside'){
+                $('aside').hide();
+            }
+        })
+
+        // 初始化方法
+        asideSize(); // 弹窗遮罩层宽度与高度
+
+        $(window).resize(function () {
+            asideSize(); // 弹窗遮罩层宽度与高度
+        })
+    });
+
+    // 弹窗显示
+    function asideShow (num) {
+        $('aside').show();
+
+        if (num == 0) {
+            $('.addExpress').show();
+            $('.expressType').hide();
+        } else if (num == 1) {
+            $('.addExpress').hide();
+            $('.expressType').show();
+        }
+    }
+
+    // input值只能输入数字，小数点以及只能输入俩位小数
+    function numRequire (e) {
+        $(e).val(e.value.match(/\d+(\.\d{0,2})?/) ? e.value.match(/\d+(\.\d{0,2})?/)[0] : '');
+    }
+
+    // 输入值保留俩位小数
+    function numFixed (e) {
+        if(e.value == null || e.value == undefined || e.value == ''){
+            return false;
+        }
+        $(e).val(parseFloat(e.value).toFixed(2));
+    }
+
+    // 回车确定输入值
+    function keyUp (e, v) {
+        if (e.keyCode == 13){
+            $(v).blur(); // 失去焦点 blur 可绑定事件
+        }
+    }
+
+    // 编辑文本
+    function tEdit (e, num) {
+        var inputs = '';
+        if (num == 1) {
+            inputs = '<input data-types="num" type="text" value="" onkeyup="editblur(this);" onblur="editText(this);" oninput="numRequire(this);" class="editInput" />';
+        } else {
+            inputs = '<input data-types="" type="text" value="" onkeyup="editblur(this);" onblur="editText(this);" class="editInput" />';
+        }
+        $(e).parents('p').append(inputs);
+        $(e).next().focus().val($(e).text());
+        $(e).hide();
+    }
+
+    // 编辑文本失去焦点
+    function editText (e) {
+        var types = e.getAttribute('data-types');
+        if (types == 'num') {
+            e.value = parseFloat(e.value).toFixed(2);
+        }
+        $(e).prev().text(e.value).show();
+        $(e).remove();
+    }
+    
+    // 回车键触发失去焦点
+    function editblur (e) {
+        if(event.keyCode == 13){
+            $(e).blur();
+        }
+    }
+
+    // 新增寄达地选项
+    function addExpress (e) {
+        var val = $(e).prev()[0].value;
+        if( val == '' || val == undefined || val == null){
+            return false;
+        }
+        var num = $('#delivered').children().length;
+        var express = '<option value="'+ num +'">'+ val +'</option>';
+        for(var i = 0; i < num; i++){
+            var temp = $('#delivered').children()[i].innerText;
+            if(val == temp){
+                alert('此寄达地已存在!');
+                return false;
+            }
+        }
+        $('#delivered').append(express);
+        $('aside').hide();
+        $('.addExpress').hide();
+        $('.expressType').hide();      
+    }
+
+    // 添加快递类型
+    function expressType (e) {
+        var val = $(e).prev()[0].value;
+        if( val == 0){
+            return false;
+        }
+        var text = $('#expressType').children()[val].innerText;
+        var num = $('#express').children().length;
+        for(var i = 0; i < num; i++){
+            var temp = $('#express').children()[i].innerText;
+            if(text == temp){
+                alert('此快递已存在!');
+                return false;
+            }
+        }
+        var express = '<option value="'+ num +'">'+ text +'</option>';
+        $('#express').append(express);
+        $('aside').hide();
+        $('.addExpress').hide();
+        $('.expressType').hide();  
+    }
+
+    // 列表删除
+    function delSecList (e) {
+        $(e).parents('li')[0].remove();
+    }
+
+
+</script>
+</html>
